@@ -10,6 +10,7 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 import {useNavigation} from '@react-navigation/native';
 import {PathNames, StackNames} from '@cuemath/constants/pathNames';
 import {setCurrentUser} from '@cuemath/redux/slices/authSlice';
+import {useDispatch} from 'react-redux';
 
 interface InputField {
   placeHolderText: string;
@@ -36,6 +37,7 @@ const LoginScreen = (props: any) => {
   const [loginForm, setLoginForm] = useState<{[key: string]: any}>({});
   const [errorMsg, setErrorMsg] = useState('');
   const navigation = useNavigation();
+  const disptach = useDispatch();
   const handleChange = (value: string, identifier: string) => {
     setLoginForm((prev: any) => ({
       ...prev,
@@ -59,6 +61,7 @@ const LoginScreen = (props: any) => {
           );
           if (user.password == loginForm.password) {
             await EncryptedStorage.setItem('currentUser', JSON.stringify(user));
+            disptach(setCurrentUser(user));
             navigation.navigate(StackNames.commonStack);
           } else {
             setErrorMsg('Icorrect Password');

@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import Header from '@cuemath/components/header';
 import {Colors} from '@cuemath/constants/colors';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@cuemath/redux/store';
 import Carousel from 'react-native-reanimated-carousel';
 import {getDeviceWidth} from '@cuemath/utils';
@@ -22,6 +22,10 @@ import BottomSheet, {
   BottomSheetView,
   useBottomSheet,
 } from '@gorhom/bottom-sheet';
+import EncryptedStorage from 'react-native-encrypted-storage';
+import {setCurrentUser} from '@cuemath/redux/slices/authSlice';
+import {useNavigation} from '@react-navigation/native';
+import {StackNames} from '@cuemath/constants/pathNames';
 
 const HomeScreen = (props: any) => {
   const {currentUser} = useSelector((state: RootState) => state.auth);
@@ -30,7 +34,8 @@ const HomeScreen = (props: any) => {
     index: 0,
   });
   const lottieReffs = [React.createRef(), React.createRef(), React.createRef()];
-
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
   // ref
   const bottomSheetRef = useRef<BottomSheet>(null);
 
@@ -43,21 +48,32 @@ const HomeScreen = (props: any) => {
         case 1:
           break;
         case 2:
-          //Can navigate to WEbView from here
-          console.log('2 clicked');
+          //Can navigate to WebView from here
+          console.log('last lottie clicked');
           break;
       }
     },
     [activeItem],
   );
 
+  const handleLogout = useCallback(async () => {
+    await EncryptedStorage.removeItem('currentUser');
+    dispatch(setCurrentUser(null));
+    navigation.reset({
+      index: 0,
+      routes: [{name: StackNames.publicStack}],
+    });
+  }, []);
+
+  console.log(currentUser);
+
   return (
     <SafeAreaView style={styles.container}>
       <Header
-        title={currentUser.email}
+        title={currentUser?.email}
         ctaText={'Logout'}
         ctaTextStyle={styles.ctaText}
-        onCTAClick={() => {}}
+        onCTAClick={handleLogout}
       />
       <View style={{height: 400}}>
         <Carousel

@@ -8,7 +8,7 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 import PublicStack from './PublicStack';
 import {StackNames} from '@cuemath/constants/pathNames';
 import CommonStack from './CommonStack';
-import {setCurrentUser, setUserLoggedIn} from '@cuemath/redux/slices/authSlice';
+import {setCurrentUser} from '@cuemath/redux/slices/authSlice';
 import {ActivityIndicator, SafeAreaView, StyleSheet} from 'react-native';
 import {Colors} from '@cuemath/constants/colors';
 
